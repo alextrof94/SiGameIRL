@@ -13,6 +13,7 @@ https://www.youtube.com/watch?v=pi8g3aP3nV4&feature=youtu.be
 ### For use by power socket or PC
 
 * Arduino nano (not soldered)
+<dl><img src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/nano.jpg"></dl>
 * Max7219 7 segment display
 * WS2812B ledstrip (60 leds/m, 10 leds for full length 16.7cm, also you can use another density with full length 16.7cm)
 * Button 6x6mm with long button (3 pieces)
