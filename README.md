@@ -26,6 +26,8 @@ https://www.youtube.com/watch?v=pi8g3aP3nV4&feature=youtu.be
 
 * Prototyping board (for soldering judge buttons and player connectors) 
 
+* Screws m3 (4 pieces 6-12mm)
+
 ### For autonomous use
 
 * TP4056 with protection
@@ -36,6 +38,8 @@ https://www.youtube.com/watch?v=pi8g3aP3nV4&feature=youtu.be
 
 * Switch (10x15mm)
 <dl><img height="60" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/switch.jpg"></dl>
+
+* Screws m3 (2 pieces 6-20mm)
 
 ## Player (multiply by the number of players, x8 usually)
 
@@ -48,3 +52,21 @@ https://www.youtube.com/watch?v=pi8g3aP3nV4&feature=youtu.be
 * BLS 3 pin
 
 * PLS 3 pin
+
+
+# Assembled
+
+* Final (without autonomous)
+<dl><img height="60" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/assembled.jpg"></dl>
+
+* Player Button
+<dl><img height="60" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/button.jpg"></dl>
+
+* Inside
+<dl><img height="60" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/inside.jpg"></dl>
+
+* Player button connectors
+<dl><img height="60" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/playerConnectors.jpg"></dl>
+
+* Judge buttons
+<dl><img height="60" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/judgeButtons.jpg"></dl>
