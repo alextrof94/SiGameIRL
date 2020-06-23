@@ -58,9 +58,11 @@ https://www.youtube.com/watch?v=pi8g3aP3nV4&feature=youtu.be
 
 * Final (without autonomous)
 <dl><img height="300" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/assembled.jpg"></dl>
+<dl><img height="300" src="https://github.com/alextrof94/SiGameIRL/blob/master/Scheme/Plate.jpg"></dl>
 
 * Player Button
 <dl><img height="60" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/button.jpg"></dl>
+<dl><img height="300" src="https://github.com/alextrof94/SiGameIRL/blob/master/Scheme/ButtonModule.jpg"></dl>
 
 * Inside
 <dl><img height="60" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/inside.jpg"></dl>
