@@ -10,7 +10,7 @@
 #define JCENTER 1
 #define JDOWN 2
 
-#define COLOR_QUESTION 0xFF00FF // purple
+#define COLOR_QUESTION 0x6600FF // purple
 #define COLOR_ANSWERING 0x0000FF // blue 
 #define COLOR_JUDGEMENT 0xFFFF00 // yellow
 #define COLOR_ANSWER_TRUE 0x00FF00 // green
@@ -172,6 +172,7 @@ uint8_t mode = MODE_SETTINGS;
 #define ROUND_END_STATUS_TIME_IS_UP 0
 #define ROUND_END_STATUS_SKIPPED 1
 #define ROUND_END_STATUS_ANSWERED 2
+#define ROUND_END_STATUS_CAT_FALSE 3
 uint8_t roundEndStatus = ROUND_END_STATUS_TIME_IS_UP;
 
 #define ANSWER_IS_FALSE 0
@@ -188,7 +189,8 @@ const uint32_t answerSecondsMax = 120;
 uint32_t answerSeconds = 30;
 uint32_t answerSecondsLeft;
 uint32_t answerMsTimer;
-uint8_t answeringPlayer = playersCount;
+int8_t answeringPlayer;
+bool catQuestion = false;
 
 const uint32_t judgeSecondsMax = 120;
 uint32_t judgeSeconds = 120;
@@ -326,6 +328,8 @@ void modeSettings() {
     EEPROM.put(30, judgeSeconds);
     EEPROM.put(40, falseStartPenaltySeconds);
     jbtns[JCENTER].debounceDelay = 100000;
+    jbtns[JDOWN].debounceDelay = 100000;
+    jbtns[JUP].debounceDelay = 100000;
   }
 }
 
@@ -333,6 +337,7 @@ void modeReady() {
   jbuttonsCheck();
   if (!jbtns[JCENTER].pressProcessedDebounced()) {
     PC.println("Question!");
+    catQuestion = false;
     mode = MODE_QUESTION_COUNTDOWN;
     questionMsTimer = questionSeconds * 1000 + millis();
     ledsUpdateDelay = (questionSeconds * 1000) / LEDSTRIP_LENGTH;
@@ -341,7 +346,21 @@ void modeReady() {
       players[i].canAnswer = true;
     }
   }
-
+  if (!jbtns[JDOWN].pressProcessedDebounced()) {
+    PC.println("CAT question!");
+    catQuestion = true;
+    jbtns[JCENTER].debounceDelay = 1000000;
+    answeringPlayer = -1;
+    mode = MODE_ANSWERING;
+    answerMsTimer = answerSeconds * 1000 + millis();
+    PC.print("Cat question"); 
+    displayUpdateTimer = 0;
+    ledsUpdateTimer = 0;
+    ledsUpdateDelay = (answerSeconds * 1000) / LEDSTRIP_LENGTH;
+    questionMsTimerLeft = questionMsTimer - millis();
+    jbtns[JUP].isPressProcessed = true; // save from false press
+    jbtns[JDOWN].isPressProcessed = true; // save from false press
+  }
   if (falseStartPenaltyEnabled) {
     buttonsCheck();
     for (uint8_t i = 0; i < playersCount; i++) {
@@ -400,6 +419,8 @@ void modeQuestionCountdown() {
       ledsUpdateTimer = 0;
       ledsUpdateDelay = (answerSeconds * 1000) / LEDSTRIP_LENGTH;
       questionMsTimerLeft = questionMsTimer - millis();
+      jbtns[JUP].isPressProcessed = true; // save from false press
+      jbtns[JDOWN].isPressProcessed = true; // save from false press
     }
   }
   // skip question work
@@ -453,9 +474,15 @@ void modeAnswering() {
     mode = MODE_ROUND_END;
     roundEndStatus = ROUND_END_STATUS_ANSWERED;
     PC.println("ANSWERING TRUE! +++");
+    jbtns[JCENTER].isPressProcessed = true; // save from false press
   }
   if (!jbtns[JDOWN].pressProcessedDebounced()) {
-    mode = MODE_QUESTION_COUNTDOWN;
+    if (catQuestion) {
+      mode = MODE_ROUND_END;
+      roundEndStatus = ROUND_END_STATUS_CAT_FALSE;
+    }
+    else
+      mode = MODE_QUESTION_COUNTDOWN;
     PC.println("ANSWERING FALSE! ---");
     for (uint8_t j = 0; j < 5; j++) {
       for (uint8_t i = 0; i < LEDSTRIP_LENGTH; i++)
@@ -473,6 +500,7 @@ void modeAnswering() {
     displayUpdateTimer = 0;
     ledsUpdateTimer = 0;
     ledsUpdateDelay = (questionSeconds * 1000) / LEDSTRIP_LENGTH;
+    jbtns[JCENTER].isPressProcessed = true; // save from false press
   }
   // time is up work
   if (millis() > answerMsTimer) {
@@ -482,6 +510,29 @@ void modeAnswering() {
     ledsUpdateTimer = 0;
     ledsUpdateDelay = (judgeSeconds * 1000) / LEDSTRIP_LENGTH;
     PC.println("JUDGEMENT");
+  }
+  // false start work
+  if (falseStartPenaltyEnabled) {
+    buttonsCheck();
+    for (uint8_t i = 0; i < playersCount; i++) {
+      if (players[i].btn.isPressed) {
+        players[i].falseStartPenalty = true;
+        players[i].falseStartPenaltyTimer = millis() + (falseStartPenaltySeconds * 1000);
+        PC.print("FALSE START for player: ");
+        PC.println(i);
+        PC.print("for seconds: ");
+        PC.println(falseStartPenaltySeconds);
+        PC.print("before: ");
+        PC.println(players[i].falseStartPenaltyTimer);
+      }
+    }
+    for (uint8_t i = 0; i < playersCount; i++) {
+      if (players[i].falseStartPenalty && millis() > players[i].falseStartPenaltyTimer) {
+        players[i].falseStartPenalty = false;
+        PC.print("FALSE START END for player: ");
+        PC.println(i);
+      }
+    }
   }
 }
 
@@ -511,9 +562,15 @@ void modeJudgement() {
     mode = MODE_ROUND_END;
     roundEndStatus = ROUND_END_STATUS_ANSWERED;
     PC.println("JUDGEMENT TRUE! +++");
+    jbtns[JCENTER].isPressProcessed = true; // save from false press
   }
   if (!jbtns[JDOWN].pressProcessedDebounced()) {
-    mode = MODE_QUESTION_COUNTDOWN;
+    if (catQuestion) {
+      mode = MODE_ROUND_END;
+      roundEndStatus = ROUND_END_STATUS_CAT_FALSE;
+    }
+    else
+      mode = MODE_QUESTION_COUNTDOWN;
     PC.println("JUDGEMENT FALSE! ---");
     for (uint8_t j = 0; j < 5; j++) {
       for (uint8_t i = 0; i < LEDSTRIP_LENGTH; i++)
@@ -531,6 +588,7 @@ void modeJudgement() {
     displayUpdateTimer = 0;
     ledsUpdateTimer = 0;
     ledsUpdateDelay = (questionSeconds * 1000) / LEDSTRIP_LENGTH;
+    jbtns[JCENTER].isPressProcessed = true; // save from false press
   }
   // time is up work
   if (millis() > judgeMsTimer) {
@@ -549,6 +607,29 @@ void modeJudgement() {
     players[answeringPlayer].canAnswer = false;
     players[answeringPlayer].btn.setInput();
     questionMsTimer = millis() + questionMsTimerLeft;
+  }
+  // false start work
+  if (falseStartPenaltyEnabled) {
+    buttonsCheck();
+    for (uint8_t i = 0; i < playersCount; i++) {
+      if (players[i].btn.isPressed) {
+        players[i].falseStartPenalty = true;
+        players[i].falseStartPenaltyTimer = millis() + (falseStartPenaltySeconds * 1000);
+        PC.print("FALSE START for player: ");
+        PC.println(i);
+        PC.print("for seconds: ");
+        PC.println(falseStartPenaltySeconds);
+        PC.print("before: ");
+        PC.println(players[i].falseStartPenaltyTimer);
+      }
+    }
+    for (uint8_t i = 0; i < playersCount; i++) {
+      if (players[i].falseStartPenalty && millis() > players[i].falseStartPenaltyTimer) {
+        players[i].falseStartPenalty = false;
+        PC.print("FALSE START END for player: ");
+        PC.println(i);
+      }
+    }
   }
 }
 
@@ -593,9 +674,24 @@ void modeRoundEnd() {
         delay(100);
       }
       break;
+    case ROUND_END_STATUS_CAT_FALSE:
+      PC.println("ROUND END CAT FALSE!");
+      for (uint8_t j = 0; j < 5; j++) {
+        for (uint8_t i = 0; i < LEDSTRIP_LENGTH; i++)
+          leds[i] = COLOR_ANSWER_FALSE;
+        FastLED.show();
+        delay(100);
+        for (uint8_t i = 0; i < LEDSTRIP_LENGTH; i++)
+          leds[i] = 0;
+        FastLED.show();
+        delay(100);
+      }
+      break;
   }
   mode = MODE_READY;
   jbtns[JCENTER].debounceDelay = 100000;
+  jbtns[JDOWN].debounceDelay = 100000;
+  jbtns[JUP].debounceDelay = 100000;
   display.sendString("rEAdY"); 
   PC.println("READY!");
   for (uint8_t i = 0; i < playersCount; i++) {
