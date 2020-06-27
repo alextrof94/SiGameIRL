@@ -86,4 +86,4 @@ SiGameIRL собранный (тестирование в игре с 5-ю уч�
 <dl><img height="60" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/judgeButtons.jpg"></dl>
 
 Все кнопки (сейчас) работают по следующей схеме: 
-<dl><img height="60" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/Arduino-%D0%9A%D0%B0%D0%BA_%D0%BF%D0%BE%D0%B2%D0%B5%D1%81%D0%B8%D1%82%D1%8C_%D1%81%D0%B2%D0%B5%D1%82%D0%BE%D0%B4%D0%B8%D0%BE%D0%B4_%D0%B8_%D0%BA%D0%BD%D0%BE%D0%BF%D0%BA%D1%83_%D0%BD%D0%B0_%D0%BE%D0%B4%D0%B8%D0%BD_%D0%BA%D0%BE%D0%BD%D1%82%D0%B0%D0%BA%D1%82_Arduino.gif"></dl>
+<dl><img height="300" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/Arduino-%D0%9A%D0%B0%D0%BA_%D0%BF%D0%BE%D0%B2%D0%B5%D1%81%D0%B8%D1%82%D1%8C_%D1%81%D0%B2%D0%B5%D1%82%D0%BE%D0%B4%D0%B8%D0%BE%D0%B4_%D0%B8_%D0%BA%D0%BD%D0%BE%D0%BF%D0%BA%D1%83_%D0%BD%D0%B0_%D0%BE%D0%B4%D0%B8%D0%BD_%D0%BA%D0%BE%D0%BD%D1%82%D0%B0%D0%BA%D1%82_Arduino.gif"></dl>
