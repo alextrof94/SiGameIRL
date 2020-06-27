@@ -1,50 +1,60 @@
 # SiGameIRL
-Device for playing SiGame with SImulator
+Устройство для проведения "Своей игры" (SIGame) через "SImulator"
 
-Breadboard-testing:
-https://www.youtube.com/watch?v=pi8g3aP3nV4&feature=youtu.be
+Тестирование платы:
+* https://www.youtube.com/watch?v=pi8g3aP3nV4
+
+SiGameIRL собранный (тестирование в игре с 5-ю участниками; там маты, так что 16+):
+* https://www.youtube.com/watch?v=th2ahZnA1qU
 
 
+# Что вам потребуется
 
-# What you need
+## Ведущий
 
-## Judge
+### Для использования при питании от ПК или блока питания
 
-### For use by power socket or PC
-
-* Arduino nano (not soldered)
+* Arduino nano (не запаянная)
 <dl><img height="60" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/nano.jpg"></dl>
 
-* Max7219 7 segment display
+* Max7219 7-сегментный дисплей
 <dl><img height="60" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/display.jpg"></dl>
 
-* WS2812B ledstrip (60 leds/m, 10 leds for full length 16.7cm, also you can use another density with full length 16.7cm)
+* WS2812B светодиодная лента (60 светодиодов/м, 10 светодиодов с длинной 16.7см, можно также использовать и другую плотность светодиодов, общей длинной 16.7см)
 <dl><img height="60" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/ws2812b.jpg"></dl>
 
-* Button 6x6mm with long button (3 pieces)
+* Кнопки 6x6мм с длинным штоком (3 шт)
 <dl><img height="60" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/ButtonJudge.jpg"></dl>
 
-* Prototyping board (for soldering judge buttons and player connectors) 
+* Резисторы 100-1000 Ом (3 шт)
 
-* Screws m3 (4 pieces 6-12mm)
+* Светодиоды (3 шт; желательно красный-желтый-зеленый)
 
-### For autonomous use
+* Макетная плата (для пайки кнопок ведущего и соединителей игроков) 
 
-* TP4056 with protection
+* Болты м3 (4 шт 6-12мм)
+
+### Для автономного питания от аккумуляторов 18650
+
+* TP4056 с защитой
 <dl><img height="60" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/tp4056.jpg"></dl>
 
-* 18650 holder (1-2 pieces)
+* 18650 держатель (1-2 шт)
 <dl><img height="60" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/holder18650.jpg"></dl>
 
-* Switch (10x15mm)
+* Выключатель (10x15мм)
 <dl><img height="60" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/switch.jpg"></dl>
 
-* Screws m3 (2 pieces 6-20mm)
+* Болты м3 (2 шт 6-20мм)
 
-## Player (multiply by the number of players, x8 usually)
+## Игрок (Умножаем на количество игроков, x8 обычно, но использовать можно и меньше)
 
-* Button 12x12mm
+* Кнопка 12x12mm
 <dl><img height="60" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/ButtonPlayer.jpg"></dl>
+
+* Резистор 100-1000 Ом
+
+* Светодиоды (3 шт, можно и 1-2шт; цвет не важен; запаиваются параллельно)
 
 * JST 3 pin
 <dl><img height="60" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/connector.jpg"></dl>
@@ -54,21 +64,21 @@ https://www.youtube.com/watch?v=pi8g3aP3nV4&feature=youtu.be
 * PLS 3 pin
 
 
-# Assembled
+# Собранный вид
 
-* Final (without autonomous)
+* Собранный вариант (без питания от аккумуляторов)
 <dl><img height="300" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/assembled.jpg"></dl>
 <dl><img height="300" src="https://github.com/alextrof94/SiGameIRL/blob/master/Scheme/Plate.jpg"></dl>
 
-* Player Button
+* Кнопка игрока
 <dl><img height="300" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/button.jpg"></dl>
 <dl><img height="300" src="https://github.com/alextrof94/SiGameIRL/blob/master/Scheme/ButtonModule.jpg"></dl>
 
-* Inside
+* Внутри
 <dl><img height="60" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/inside.jpg"></dl>
 
-* Player button connectors
+* Соединители игроков
 <dl><img height="60" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/playerConnectors.jpg"></dl>
 
-* Judge buttons
+* Кнопки ведущего
 <dl><img height="60" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/judgeButtons.jpg"></dl>
