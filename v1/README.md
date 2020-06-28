@@ -22,10 +22,10 @@ SiGameIRL собранный (тестирование в игре с 5-ю уч�
 ### Для использования с питанием от ПК или блока питания
 
 * Arduino nano (не запаянная)
-<dl><img height="60" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/nano.jpg"></dl>
+<dl><img height="60" src="./Other/nano.jpg"></dl>
 
 * Max7219 7-сегментный дисплей
-<dl><img height="60" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/display.jpg"></dl>
+<dl><img height="60" src="./Other/display.jpg"></dl>
 
 * WS2812B светодиодная лента (60 светодиодов/м, 10 светодиодов с длинной 16.7см, можно также использовать и другую плотность светодиодов, общей длинной 16.7см)
 <dl><img height="60" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/ws2812b.jpg"></dl>
