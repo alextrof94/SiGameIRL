@@ -44,7 +44,7 @@ SiGameIRL собранный (тестирование в игре с 5-ю уч�
 * TP4056 с защитой
 <dl><img height="60" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/tp4056.jpg"></dl>
 
-* 18650 держатель (1-2 шт)
+* 18650 держатель (1-2 шт; запаиваются ПАРАЛЛЕЛЬНО)
 <dl><img height="60" src="https://github.com/alextrof94/SiGameIRL/blob/master/Other/holder18650.jpg"></dl>
 
 * Выключатель (10x15мм)
