@@ -466,6 +466,25 @@ void modeSettings() {
   }
 }
 
+void falsestartWork() {
+  if (falseStartPenaltyEnabled) {
+    for (uint8_t i = 0; i < 8; i++) {
+      if (players[i].falseStartPenalty && millis() > players[i].falseStartPenaltyTimer) {
+        players[i].falseStartPenalty = false;
+      }
+    }
+  }
+}
+
+void blinking(uint32_t color) {
+  for (uint8_t j = 0; j < 5; j++) {
+    sendToLeds(ledstripLength, color);
+    delay(100);
+    sendToLeds(0, 0);
+    delay(100);
+  }
+}
+
 uint32_t buttonBattleTimer;
 const uint32_t buttonBattleDelay = 100;
 void modeReady() {
@@ -506,17 +525,16 @@ void modeReady() {
     rEnable = true;
     sendReset();
   }
+  if (jbtnReserved.clickNotProcessed()){
+    if (jbtnReserved.releaseTime - jbtnReserved.pressTime > 1000000) {
+      mode = MODE_RANDOM_SELECTING_PLAYERS;
+      rEnable = true;
+    }
+  }
+  falsestartWork();
 }
 
 void modeQuestionNormal() {
-  // penalty work
-  if (falseStartPenaltyEnabled) {
-    for (uint8_t i = 0; i < 8; i++) {
-      if (players[i].falseStartPenalty && millis() > players[i].falseStartPenaltyTimer) {
-        players[i].falseStartPenalty = false;
-      }
-    }
-  }
   // leds work
   if (millis() >= ledsUpdateTimer) {
     ledsUpdateTimer = millis() + ledsUpdateDelay;
@@ -573,6 +591,8 @@ void modeQuestionNormal() {
     roundEndStatus = ROUND_END_STATUS_SKIPPED;
     sendReset();
   }
+  // false start work
+  falsestartWork();
 }
 
 uint8_t selectedPlayerIndex = 255;
@@ -592,7 +612,7 @@ void modeQuestionCatSelectPlayer() {
     }
   }
   for (uint8_t i = 0; i < 8; i++) {
-    if (players[i].playerActive && players[i].playerIndex == selectedPlayerIndex) {
+    if (players[i].playerIndex == selectedPlayerIndex) {
       if (selectedPlayer != i){
         if (selectedPlayer != 255)
           sendPlayer(selectedPlayer, 'R');
@@ -622,6 +642,30 @@ void modeQuestionCatSelectPlayer() {
   }
 }
 
+void answeredFalse() {
+  players[answeringPlayer].canAnswer = false;
+  sendReset();
+  blinking(COLOR_ANSWER_FALSE);
+  questionMsTimer = millis() + questionMsTimerLeft;
+  displayUpdateTimer = 0;
+  ledsUpdateTimer = 0;
+  ledsUpdateDelay = (questionSeconds * 1000) / ledstripLength;
+  answeringPlayer = -1;
+  if (!isCatQuestion)
+    mode = MODE_QUESTION_NORMAL;
+  else {
+    mode = MODE_ROUND_END;
+    roundEndStatus = ROUND_END_STATUS_CAT_FALSE;
+  }  
+}
+
+void answeredTrue() {
+  mode = MODE_ROUND_END;
+  answeringPlayerOld = answeringPlayer;
+  answeringPlayer = -1;
+  roundEndStatus = ROUND_END_STATUS_ANSWERED;
+}
+
 void modeAnswering() {
   if (rEnable){
     sendPlayer(answeringPlayer, 'S'); 
@@ -646,31 +690,10 @@ void modeAnswering() {
   // buttons work
   jbuttonsCheck();
   if (jbtnTrue.clickNotProcessed()) {
-    mode = MODE_ROUND_END;
-    answeringPlayerOld = answeringPlayer;
-    answeringPlayer = -1;
-    roundEndStatus = ROUND_END_STATUS_ANSWERED;
+    answeredTrue();
   }
   if (jbtnFalse.clickNotProcessed()) {
-    players[answeringPlayer].canAnswer = false;
-    sendReset();
-    for (uint8_t j = 0; j < 5; j++) {
-      sendToLeds(ledstripLength, COLOR_ANSWER_FALSE);
-      delay(100);
-      sendToLeds(0, 0);
-      delay(100);
-    }
-    questionMsTimer = millis() + questionMsTimerLeft;
-    displayUpdateTimer = 0;
-    ledsUpdateTimer = 0;
-    ledsUpdateDelay = (questionSeconds * 1000) / ledstripLength;
-    answeringPlayer = -1;
-    if (!isCatQuestion)
-      mode = MODE_QUESTION_NORMAL;
-    else {
-      mode = MODE_ROUND_END;
-      roundEndStatus = ROUND_END_STATUS_CAT_FALSE;
-    }    
+    answeredFalse();
   }
   // time is up work
   if (millis() > answerMsTimer) {
@@ -682,15 +705,7 @@ void modeAnswering() {
     ledsUpdateDelay = (judgeSeconds * 1000) / ledstripLength;
   }
   // false start work
-  if (falseStartPenaltyEnabled) {
-    for (uint8_t i = 0; i < 8; i++) {
-      if (players[i].falseStartPenalty && millis() > players[i].falseStartPenaltyTimer) {
-        players[i].falseStartPenalty = false;
-        PC.print("FALSE START END for player: ");
-        PC.println(i);
-      }
-    }
-  }
+  falsestartWork();
 }
 
 void modeJudgement() {
@@ -714,115 +729,107 @@ void modeJudgement() {
   // buttons work
   jbuttonsCheck();
   if (jbtnTrue.clickNotProcessed()) {
-    mode = MODE_ROUND_END;
-    answeringPlayerOld = answeringPlayer;
-    answeringPlayer = -1;
-    roundEndStatus = ROUND_END_STATUS_ANSWERED;
+    answeredTrue();
   }
   if (jbtnFalse.clickNotProcessed()) {
-    players[answeringPlayer].canAnswer = false;
-    sendReset();
-    for (uint8_t j = 0; j < 5; j++) {
-      sendToLeds(ledstripLength, COLOR_ANSWER_FALSE);
-      delay(100);
-      sendToLeds(0, 0);
-      delay(100);
-    }
-    questionMsTimer = millis() + questionMsTimerLeft;
-    displayUpdateTimer = 0;
-    ledsUpdateTimer = 0;
-    ledsUpdateDelay = (questionSeconds * 1000) / ledstripLength;
-    answeringPlayer = -1;
-    if (!isCatQuestion)
-      mode = MODE_QUESTION_NORMAL;
-    else {
-      mode = MODE_ROUND_END;
-      roundEndStatus = ROUND_END_STATUS_CAT_FALSE;
-    }   
+    answeredFalse();
   }
   // time is up work
   if (millis() > judgeMsTimer) {
-    mode = MODE_QUESTION_NORMAL;
-    players[answeringPlayer].canAnswer = false;
-    sendReset();
-    for (uint8_t j = 0; j < 5; j++) {
-      sendToLeds(ledstripLength, COLOR_ANSWER_FALSE);
-      delay(100);
-      sendToLeds(0, 0);
-      delay(100);
-    }
-    questionMsTimer = millis() + questionMsTimerLeft;
-    displayUpdateTimer = 0;
-    ledsUpdateTimer = 0;
-    ledsUpdateDelay = (questionSeconds * 1000) / ledstripLength;
-    answeringPlayer = -1;
-    if (!isCatQuestion)
-      mode = MODE_QUESTION_NORMAL;
-    else {
-      mode = MODE_ROUND_END;
-      roundEndStatus = ROUND_END_STATUS_CAT_FALSE;
-    }   
+    answeredFalse();
   }
   // false start work
-  if (falseStartPenaltyEnabled) {
-    for (uint8_t i = 0; i < 8; i++) {
-      if (players[i].falseStartPenalty && millis() > players[i].falseStartPenaltyTimer) {
-        players[i].falseStartPenalty = false;
-        PC.print("FALSE START END for player: ");
-        PC.println(i);
-      }
-    }
-  }
+  falsestartWork();
 }
 
 void modeRoundEnd() {
   switch (roundEndStatus) {
     case ROUND_END_STATUS_TIME_IS_UP:
-      PC.println("ROUND END TIME IS UP!");
-      for (uint8_t j = 0; j < 5; j++) {
-        sendToLeds(ledstripLength, COLOR_ANSWER_FALSE);
-        delay(100);
-        sendToLeds(0, 0);
-        delay(100);
-      }
+      blinking(COLOR_ANSWER_FALSE);
       break;
     case ROUND_END_STATUS_SKIPPED:
-      PC.println("ROUND END SKIPPED!");
-      for (uint8_t j = 0; j < 5; j++) {
-        sendToLeds(ledstripLength, COLOR_JUDGEMENT);
-        delay(100);
-        sendToLeds(0, 0);
-        delay(100);
-      }
+      blinking(COLOR_JUDGEMENT);
       break;
     case ROUND_END_STATUS_ANSWERED:
-      PC.println("ROUND END ANSWERED!");
-      for (uint8_t j = 0; j < 5; j++) {
-        sendToLeds(ledstripLength, COLOR_ANSWER_TRUE);
-        delay(100);
-        sendToLeds(0, 0);
-        delay(100);
-      }
+      blinking(COLOR_ANSWER_TRUE);
       break;
     case ROUND_END_STATUS_CAT_FALSE:
-      PC.println("ROUND END CAT FALSE!");
-      for (uint8_t j = 0; j < 5; j++) {
-        sendToLeds(ledstripLength, COLOR_ANSWER_FALSE);
-        delay(100);
-        sendToLeds(0, 0);
-        delay(100);
-      }
+      blinking(COLOR_ANSWER_FALSE);
       break;
   }
   mode = MODE_READY;
   rEnable = true;
 }
 
+bool playerRandomEnabled[8];
 void modeRandomSelectingPlayers() {
-  
+  if (rEnable) {
+    rEnable = false;
+    sendReset();
+    String str = "rnd.sel.p ";
+    sendText(str);
+    for (uint8_t i = 0; i < 8; i++) {
+      playerRandomEnabled[i] = false;
+    }
+  }
+  jbuttonsCheck();
+  for (uint8_t i = 0; i < 8; i++) {
+    if (jbtnPS[i].clickNotProcessed()) {
+      playerRandomEnabled[i] = !playerRandomEnabled[i];
+      for (uint8_t j = 0; j < 8; j++) {
+        if (players[j].playerIndex == i) {
+          sendPlayer(j, playerRandomEnabled[i] ? 'B' : 'R');
+        }
+      }
+    }
+  }
+  if (jbtnMaster.clickNotProcessed()){
+    bool canContinue = false;
+    for (uint8_t i = 0; i < 8; i++) {
+      if (playerRandomEnabled[i]) {
+        canContinue = true;
+      }
+    }
+    if (canContinue){
+      mode = MODE_RANDOM_DO;
+      rEnable = true;
+    } else {
+      mode = MODE_READY;
+      rEnable = true;
+    }
+  }
 }
+
+uint8_t rndResult = 255;
 void modeRandomDo() {
-  
+  if (rEnable) {
+    rEnable = false;
+    bool rndGreat = false;
+    while (!rndGreat){
+      rndResult = random(0, 7);
+      if (playerRandomEnabled[rndResult])
+        rndGreat = true;
+    }
+    sendReset();
+    String str = "rnd.res.  ";
+    str[9] = rndResult + '1';
+    sendText(str);
+    for (uint8_t j = 0; j < 8; j++) {
+      if (players[j].playerIndex == rndResult) {
+        sendPlayer(j, 'S');
+      }
+    }
+  }
+  jbuttonsCheck();
+  if (jbtnTrue.clickNotProcessed()){
+    answeringPlayerOld = rndResult;
+    mode = MODE_READY;
+    rEnable = true;
+  }
+  if (jbtnFalse.clickNotProcessed()) {
+    mode = MODE_READY;
+    rEnable = true;
+  }
 }
 
 void setup() {
@@ -858,9 +865,6 @@ void setup() {
 }
 
 void loop() {
-  if (mode != modeOld) {
-    PC.print("mode = "); PC.println(mode);
-  }
   switch (mode) {
     case MODE_INITIALIZATION: modeInitialization(); break;
     case MODE_SETTINGS: modeSettings(); break;
@@ -874,15 +878,4 @@ void loop() {
     case MODE_RANDOM_DO: modeRandomDo(); break;
   }
   modeOld = mode;
-  /*
-  jbtnTrue.readState();
-  if (jbtnTrue.clickNotProcessed()) {
-    PC.println("True");
-    PC.println();
-  }
-  jbtnFalse.readState();
-  if (jbtnFalse.clickNotProcessed()) {
-    PC.println("False");
-    PC.println();
-  }*/
 }
