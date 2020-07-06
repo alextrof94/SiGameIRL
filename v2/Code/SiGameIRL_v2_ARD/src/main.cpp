@@ -5,8 +5,8 @@
 #include <MAX7219.h>
 #include <Smoothed.h>
 
-const uint16_t lightSensorDark = 400;
-const uint16_t lightSensorLight = 700;
+const uint16_t lightSensorDark = 400; // !!! SETUP THIS WITH YOUR PHOTORES
+const uint16_t lightSensorLight = 700; // !!! SETUP THIS WITH YOUR PHOTORES
 Smoothed <uint16_t> smoother; 
 
 const uint8_t PIN_LIGHT_SENSOR = A1;
@@ -14,13 +14,14 @@ const uint8_t PIN_LEDSTRIP = A0;
 const uint8_t PIN_MAX7219_DIN = 11;
 const uint8_t PIN_MAX7219_CS = 12;
 const uint8_t PIN_MAX7219_CLK = 13;
-const uint8_t PIN_PLAYERS[8] = {6, 2, 3, 4, 7, 8, 9, 5};
-//const uint8_t PIN_PLAYERS[8] = {_3, 4, 5, 6, 7, 8, 9, 2};
+const uint8_t PIN_PLAYERS[8] = {6, 2, 3, 4, 7, 8, 9, 5}; // !!! SETUP THIS WITH YOUR SOLDERED BUTTONS
 
-const uint8_t LEDSTRIP_LENGTH = 14;
+const uint8_t LEDSTRIP_LENGTH = 14; // !!! SETUP THIS WITH YOUR COUNT OF LEDS IN LEDSTRIP (COUNT MUST BE EVEN)
 CRGB leds[LEDSTRIP_LENGTH];
 
-MAX7219 display (1, PIN_MAX7219_CS, PIN_MAX7219_DIN, PIN_MAX7219_CLK);  // ChipsCount / LOAD / DIN / CLK
+const uint32_t ARD_BAUDTRATE = 115200;
+
+MAX7219 display (1, PIN_MAX7219_CS, PIN_MAX7219_DIN, PIN_MAX7219_CLK);
 
 const uint32_t colors[10] = {0xFF0000, 0x00FF00, 0x0000FF, 0xFFFFFF, 0x6600FF, 0xFFFF00, 0x111111, 0x555555, 0x999999, 0xBBBBBB};
 
@@ -201,7 +202,7 @@ void setup() {
   pinMode(PIN_LIGHT_SENSOR, INPUT);
   for (uint8_t i = 0; i < 8; i++)
     pinMode(PIN_PLAYERS[i], OUTPUT);
-  Serial.begin(115200);
+  Serial.begin(ARD_BAUDTRATE);
   FastLED.addLeds<WS2812B, PIN_LEDSTRIP, GRB>(leds, LEDSTRIP_LENGTH);
   display.begin();
   display.setIntensity(5); // 15 max
