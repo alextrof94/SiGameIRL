@@ -135,9 +135,9 @@ void modeGame() {
       uint8_t colorG = (uint8_t)cmdbuf[3];
       uint8_t colorB = (uint8_t)cmdbuf[4];
 
-      if (needToLight > LEDSTRIP_LENGTH / 2)
-        needToLight = LEDSTRIP_LENGTH / 2;
       uint8_t lM = LEDSTRIP_LENGTH / 2;
+      if (needToLight > lM)
+        needToLight = lM;
       for (uint8_t i = lM - needToLight; i < lM; i++)
         leds[i] = CRGB(colorR, colorG, colorB);
       for (uint8_t i = lM; i < needToLight + lM; i++)

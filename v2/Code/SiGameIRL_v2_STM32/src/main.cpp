@@ -514,7 +514,7 @@ void modeReady() {
     mode = MODE_QUESTION_NORMAL;
     isCatQuestion = false;
     rEnable = true;
-    questionMsTimer = questionSeconds * 1000 + millis();
+    questionMsTimer = questionSeconds * 1000 + millis() - 1;
     ledsUpdateDelay = (questionSeconds * 1000) / ledstripLength;
     buttonBattleTimer = millis() + buttonBattleDelay;
     sendReset();
@@ -577,7 +577,7 @@ void modeQuestionNormal() {
     ledsUpdateTimer = 0;
     ledsUpdateDelay = (answerSeconds * 1000) / ledstripLength;
     questionMsTimerLeft = questionMsTimer - millis();
-    answerMsTimer = answerSeconds * 1000 + millis();
+    answerMsTimer = answerSeconds * 1000 + millis() - 1;
     rEnable = true;
   }
   // check all bad
@@ -684,7 +684,7 @@ void modeAnswering() {
   // leds work
   if (millis() > ledsUpdateTimer) {
     ledsUpdateTimer = millis() + ledsUpdateDelay;
-    uint8_t ledsNeedLight = (((answerMsTimer - millis()) / (answerSeconds * 10)) * ledstripLength) / 100 + 1;
+    uint8_t ledsNeedLight = ((((answerMsTimer - millis()) / (answerSeconds * 10)) * ledstripLength) / 100) + 1;
     sendToLeds(ledsNeedLight, COLOR_ANSWERING);
   }
   // buttons work
@@ -822,6 +822,7 @@ void modeRandomDo() {
   }
   jbuttonsCheck();
   if (jbtnTrue.clickNotProcessed()){
+    answeringPlayer = rndResult;
     answeringPlayerOld = rndResult;
     mode = MODE_READY;
     rEnable = true;
