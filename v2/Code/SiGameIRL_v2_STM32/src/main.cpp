@@ -43,24 +43,19 @@ int answeringPlayerOld = -1;
 uint8_t roundEndStatus = ROUND_END_STATUS_TIME_IS_UP;
 
 class Button {
-  private:
+  protected:
     bool isPressedOld = false;
   public:
-    uint8_t pin;
+    uint8_t pin;  
     bool isPressed = false;
     bool isClicked = false;
     uint32_t pressTime = 0;
     uint32_t releaseTime = 0;
     uint32_t debounceTime = 50000; // 50 ms
 
-    Button () {}
-    Button(uint8_t inPin) {
-      pin = inPin;
-    };
+    Button() {}
 
     void readState() {
-      isPressed = !digitalRead(pin);
-
       if (isPressed && !isPressedOld) {
         pressTime = micros();
       } else {
@@ -72,7 +67,7 @@ class Button {
       }
       
       isPressedOld = isPressed;
-    };
+    }
 
     bool clickNotProcessed() {
       if (isClicked) {
@@ -83,20 +78,28 @@ class Button {
     };
 };
 
-class ButtonAnalog {
+class ButtonInterrupt: public Button {
+  public:
+    ButtonInterrupt() : Button() {}
+    ButtonInterrupt(uint8_t inPin) {
+      pin = inPin;
+    };
+
+    void readState() {
+      isPressed = !digitalRead(pin);
+      Button::readState();
+    };
+
+};
+
+class ButtonAnalog : public Button {  
   private:
     uint16_t buf;
-    bool isPressedOld = false;
   public:
-    uint8_t pin;
     uint16_t analogMin;
     uint16_t analogMax;
-    bool isPressed = false;
-    bool isClicked = false;
-    uint32_t pressTime = 0;
-    uint32_t releaseTime = 0;
-    uint32_t debounceTime = 50000; // 100 ms
 
+    ButtonAnalog() : Button() {}
     ButtonAnalog(uint8_t inPin, uint16_t inValueMin, uint16_t inValueMax) {
       pin = inPin;
       analogMin = inValueMin;
@@ -110,31 +113,13 @@ class ButtonAnalog {
       else
         isPressed = false;
 
-      if (isPressed && !isPressedOld) {
-        pressTime = micros();
-      } else {
-        if (!isPressed && isPressedOld) {
-          releaseTime = micros();
-          if (releaseTime - pressTime > debounceTime)
-            isClicked = true;
-        }
-      }
-      
-      isPressedOld = isPressed;
-    };
-
-    bool clickNotProcessed() {
-      if (isClicked) {
-        isClicked = false;
-        return true;
-      } else
-        return false;      
+      Button::readState();
     };
 };
 
 class Player {
   public:
-    Button button;
+    ButtonInterrupt button;
     uint32_t falseStartPenaltyTimer = 0;
     bool falseStartPenalty = false;
     bool canAnswer = false;
@@ -151,9 +136,9 @@ class Player {
 Player players[8];
 uint8_t activePlayerCount = 0;
 
-Button jbtnMaster = Button(PIN_JUDGE_MASTER);
-Button jbtnSpecial = Button(PIN_JUDGE_SPECIAL);
-Button jbtnReserved = Button(PIN_JUDGE_RESERVED);
+ButtonInterrupt jbtnMaster = ButtonInterrupt(PIN_JUDGE_MASTER);
+ButtonInterrupt jbtnSpecial = ButtonInterrupt(PIN_JUDGE_SPECIAL);
+ButtonInterrupt jbtnReserved = ButtonInterrupt(PIN_JUDGE_RESERVED);
 ButtonAnalog jbtnTrue = ButtonAnalog(PIN_JUDGE_A_T_F, 400, 620);
 ButtonAnalog jbtnFalse = ButtonAnalog(PIN_JUDGE_A_T_F, 900, 1023);
 ButtonAnalog jbtnPS[8] = {
