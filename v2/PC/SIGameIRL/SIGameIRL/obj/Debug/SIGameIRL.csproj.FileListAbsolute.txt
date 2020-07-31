@@ -1,0 +1,16 @@
+F:\GitHub\SiGameIRL\v2\PC\SIGameIRL\SIGameIRL\obj\Debug\SIGameIRL.csprojAssemblyReference.cache
+F:\GitHub\SiGameIRL\v2\PC\SIGameIRL\SIGameIRL\obj\Debug\MainWindow.g.cs
+F:\GitHub\SiGameIRL\v2\PC\SIGameIRL\SIGameIRL\obj\Debug\App.g.cs
+F:\GitHub\SiGameIRL\v2\PC\SIGameIRL\SIGameIRL\obj\Debug\SIGameIRL_MarkupCompile.cache
+F:\GitHub\SiGameIRL\v2\PC\SIGameIRL\SIGameIRL\obj\Debug\SIGameIRL_MarkupCompile.lref
+F:\GitHub\SiGameIRL\v2\PC\SIGameIRL\SIGameIRL\bin\Debug\SIGameIRL.exe
+F:\GitHub\SiGameIRL\v2\PC\SIGameIRL\SIGameIRL\bin\Debug\SIGameIRL.pdb
+F:\GitHub\SiGameIRL\v2\PC\SIGameIRL\SIGameIRL\obj\Debug\MainWindow.baml
+F:\GitHub\SiGameIRL\v2\PC\SIGameIRL\SIGameIRL\obj\Debug\SIGameIRL.g.resources
+F:\GitHub\SiGameIRL\v2\PC\SIGameIRL\SIGameIRL\obj\Debug\SIGameIRL.Properties.Resources.resources
+F:\GitHub\SiGameIRL\v2\PC\SIGameIRL\SIGameIRL\obj\Debug\SIGameIRL.csproj.GenerateResource.cache
+F:\GitHub\SiGameIRL\v2\PC\SIGameIRL\SIGameIRL\obj\Debug\SIGameIRL.csproj.CoreCompileInputs.cache
+F:\GitHub\SiGameIRL\v2\PC\SIGameIRL\SIGameIRL\obj\Debug\SIGameIRL.exe
+F:\GitHub\SiGameIRL\v2\PC\SIGameIRL\SIGameIRL\obj\Debug\SIGameIRL.pdb
+F:\GitHub\SiGameIRL\v2\PC\SIGameIRL\SIGameIRL\obj\Debug\UserScoreControl.g.cs
+F:\GitHub\SiGameIRL\v2\PC\SIGameIRL\SIGameIRL\obj\Debug\UserScoreControl.baml
